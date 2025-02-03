@@ -40,7 +40,6 @@ const EachProduct: React.FC<{
       : null;
   });
 
-
   // Helper function to find the image based on the selected color
   const findImage = () => {
     if (selectedColor) {
@@ -56,7 +55,6 @@ const EachProduct: React.FC<{
           className="h-60 w-full rounded-t-lg object-contain p-1"
           src={`${import.meta.env.VITE_UPLOADS_URL}${findImage()}`}
           alt="product image"
-          // alt={`${import.meta.env.VITE_UPLOADS_URL}${findImage()}`}
         />
         <Menubar className="border-none shadow-none absolute top-0 right-0 translate-y-4 -translate-x-3">
           <MenubarMenu>
@@ -64,12 +62,10 @@ const EachProduct: React.FC<{
               <EllipsisVertical className="h-4 w-4" />
             </MenubarTrigger>
             <MenubarContent className="" align="end">
-              {/* <MenubarSeparator /> */}
               <DeleteProduct
                 productSlug={props.product.slug}
                 debouncedSearch={props.debouncedSearch}
                 productTitle={props.product.title}
-              
               />
             </MenubarContent>
           </MenubarMenu>
@@ -77,13 +73,13 @@ const EachProduct: React.FC<{
         <CardTitle className="mt-4 px-3 pb-2 text-xl font-semibold tracking-tight leading-none">
           {props.product.title}
         </CardTitle>
-        <CardDescription className="px-3 pb-2 text-sm line-clamp-1">
+        <CardDescription className="px-3 pb-2 text-sm line-clamp-auto">
           {props.product.short_description}
         </CardDescription>
         {selectedStorage && (
           <CardContent className="px-3 pb-4 h-full">
             <Label className="text-3xl flex justify-start items-center font-bold">
-              ${selectedStorage.price}
+              £{selectedStorage.price}
             </Label>
             <Select
               onValueChange={(value) => {
@@ -122,7 +118,13 @@ const EachProduct: React.FC<{
                     value={color.color}
                     defaultChecked={color.color === selectedColor?.color}
                   >
-                    {color.color}
+                    <div className="flex items-center">
+                      <div
+                        className="w-5 h-5 rounded-full mr-2"
+                        style={{ backgroundColor: color.color }}
+                      />
+                      <span>{color.color}</span>
+                    </div>
                   </SelectItem>
                 ))}
               </SelectContent>
