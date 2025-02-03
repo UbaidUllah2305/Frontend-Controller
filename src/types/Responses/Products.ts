@@ -6,6 +6,13 @@ export type colorAttribute = {
   image: string;
 };
 
+export type productAttribute = {
+  size: string;
+  sku: string;
+  price: number;
+  image: string;
+};
+
 export type storageAttribute = {
   [x: string]: any;
   id: string;
@@ -24,4 +31,30 @@ export type shortProduct = {
   gridImages: string[];
   color_attributes: colorAttribute[];
   storage_attributes: storageAttribute[];
+  name: string;
+  attributes: productAttribute[];
+};
+
+export type productMetaData = {
+  slug: string;
+  name: string;
+  title: string;
+  description: string;
+  attributes: productAttribute[];
+  metadata?: {
+    title: string;
+    description: string;
+  };
+};
+
+export type SingleProduct = {
+  name: string;
+  slug: string;
+  title: string;
+  description: string;
+  subcategories: {
+    name: string;
+    slug: string;
+  }[];
+  attributes: productAttribute[];
 };
