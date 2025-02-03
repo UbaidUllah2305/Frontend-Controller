@@ -3,27 +3,21 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
 import {
   Menubar,
   MenubarContent,
-  MenubarItem,
   MenubarMenu,
-  MenubarSeparator,
   MenubarTrigger,
 } from '@/components/ui/menubar';
 import { Label } from '../ui/label';
 import {
-  ChevronDown,
   EllipsisVertical,
-  SquareArrowOutUpRight,
 } from 'lucide-react';
 import DeleteCategoryModal from '../Modals/categories/DeleteCategoryModal';
 import EditCategoryModal from '../Modals/categories/EditCategoryModal';
-import { Navigate, useNavigate } from 'react-router-dom';
 
 export type EachCategoryCardProps = {
   name: string;
@@ -34,10 +28,7 @@ export type EachCategoryCardProps = {
   count: number;
 };
 const EachCategoryCard = (props: EachCategoryCardProps) => {
-  const navigate = useNavigate();
-  const handleGetSubCategories = () => {
-    navigate(`/catalog/${props.slug}/sub-categories`); // Navigate to the route
-  };
+
   return (
     <React.Fragment>
       <Card className="shadow-none border border-border">
@@ -50,15 +41,6 @@ const EachCategoryCard = (props: EachCategoryCardProps) => {
                   <EllipsisVertical className="h-4 w-4" />
                 </MenubarTrigger>
                 <MenubarContent className="border border-border flex flex-col gap-1">
-                  {/* View Sub Categories */}
-                  <MenubarItem
-                    onClick={handleGetSubCategories}
-                    className="flex items-center"
-                  >
-                    <SquareArrowOutUpRight className="mr-2 h-4 w-4" />
-                    View Sub Categories
-                  </MenubarItem>
-
                   {/* Edit Category */}
                   <EditCategoryModal
                     slug={props.slug}

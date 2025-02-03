@@ -10,7 +10,7 @@ import { Icons } from '@/components/icons';
 import { toast } from 'sonner';
 import { useAppDispatch } from '@/store';
 import { loginUser } from '@/store/features/auth.slice';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 const LoginForm = () => {
   const [showPassword, setShowPassword] = React.useState<boolean>(false);
   const [isLoading, SetIsLoading] = React.useState<boolean>(false);
@@ -57,7 +57,7 @@ const LoginForm = () => {
           <Input
             id="email"
             type="email"
-            placeholder="huzaifamajeed@gmail.com"
+            placeholder="user@gmail.com"
             disabled={isSubmitting || isLoading}
             {...register('email')}
           />

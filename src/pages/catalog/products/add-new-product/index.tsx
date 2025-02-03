@@ -10,44 +10,39 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { Image, Info, Plus, Trash2 } from 'lucide-react';
-import React from 'react';
+import React, { useState } from 'react';
 import { SubmitErrorHandler, useFieldArray, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
 import ImageUploading from 'react-images-uploading';
+import { SketchPicker } from 'react-color';
 
-const variantSchema = z.object({
-  size: z.string({ required_error: 'Size is required' }),
-  sku: z.string().min(1, 'SKU is required'),
+// Define schema for storage attributes
+const storageAttributeSchema = z.object({
+  storage: z.string({ required_error: 'Storage is required' }),
   price: z.number({ required_error: 'Price is required' }),
-  image: z.string(),
 });
 
+// Define schema for color attributes
+const colorAttributeSchema = z.object({
+  color: z.string({ required_error: 'Color is required' }),
+  image: z.string().optional(),
+});
+
+// Define schema for the product form
 const productSchema = z.object({
-  name: z.string().min(1, 'Product name is required'),
   title: z.string().min(1, 'Product title is required'),
-  description: z.string().min(1, 'Description is required'),
+  long_description: z.string().min(1, 'Long description is required'),
+  short_description: z.string().min(1, 'Short description is required'),
   subCategorySlugs: z
     .array(z.string())
     .nonempty('At least one subcategory is required'),
-  attributes: z
-    .array(variantSchema)
-    .min(1, 'At least one variant is required')
-    .refine(
-      (data) => {
-        // Ensure the first attribute has a valid base64 image
-        const firstImage = data[0]?.image;
-        return (
-          typeof firstImage === 'string' &&
-          firstImage.trim() !== '' &&
-          firstImage.startsWith('data:image/')
-        );
-      },
-      {
-        message: 'The first attribute must have a valid image.',
-        path: ['attributes', 0, 'image'],
-      },
-    ),
+  color_attributes: z
+    .array(colorAttributeSchema)
+    .min(1, 'At least one color attribute is required'),
+  storage_attributes: z
+    .array(storageAttributeSchema)
+    .min(1, 'At least one storage attribute is required'),
 });
 
 export type ProductFormValues = z.infer<typeof productSchema>;
@@ -63,17 +58,31 @@ const AddNewProduct = () => {
     useForm<ProductFormValues>({
       resolver: zodResolver(productSchema),
       defaultValues: {
-        name: '',
         title: '',
-        description: '',
+        long_description: '',
+        short_description: '',
         subCategorySlugs: [],
-        attributes: [{ size: '', sku: '', price: 0, image: '' }],
+        color_attributes: [{ color: '', image: '' }],
+        storage_attributes: [{ storage: '', price: 0 }],
       },
     });
 
-  const { fields, append, remove } = useFieldArray({
+  const {
+    fields: colorFields,
+    append: appendColor,
+    remove: removeColor,
+  } = useFieldArray({
     control,
-    name: 'attributes',
+    name: 'color_attributes',
+  });
+
+  const {
+    fields: storageFields,
+    append: appendStorage,
+    remove: removeStorage,
+  } = useFieldArray({
+    control,
+    name: 'storage_attributes',
   });
 
   const handleImageUpload = (file: File, index: number) => {
@@ -81,7 +90,7 @@ const AddNewProduct = () => {
     reader.readAsDataURL(file);
     reader.onloadend = () => {
       const base64String = reader.result as string;
-      setValue(`attributes.${index}.image`, base64String);
+      setValue(`color_attributes.${index}.image`, base64String);
     };
   };
 
@@ -89,14 +98,11 @@ const AddNewProduct = () => {
     // Trim the string fields
     const trimmedData = {
       ...data,
-      name: data.name.trim(),
       title: data.title.trim(),
-      description: data.description.trim(),
-      attributes: data.attributes.map((attr, idx) => ({
-        ...attr,
-        image: idx === 0 ? attr.image : attr.image || '',
-      })),
+      long_description: data.long_description.trim(),
+      short_description: data.short_description.trim(),
     };
+
     console.log(trimmedData);
     addNewProduct.mutate(trimmedData, {
       onSuccess: () => {
@@ -109,7 +115,6 @@ const AddNewProduct = () => {
             error.response.data.message || 'An error occurred';
           toast.error(`${errorMessage}`);
         } else {
-          // Handle non-Axios errors
           toast.error(`${error.message}`);
         }
       },
@@ -130,8 +135,7 @@ const AddNewProduct = () => {
     displayErrors(errors);
   };
 
-  // Store images per attribute index
-  const [attributeImages, setAttributeImages] = React.useState<{
+  const [attributeImages, setAttributeImages] = useState<{
     [key: number]: any[];
   }>({});
 
@@ -146,8 +150,7 @@ const AddNewProduct = () => {
     if (imageList.length > 0 && imageList[0].file) {
       handleImageUpload(imageList[0].file, index);
     } else {
-      // If no image is selected, set image field to empty string for non-first attributes
-      setValue(`attributes.${index}.image`, '');
+      setValue(`color_attributes.${index}.image`, '');
     }
   };
 
@@ -158,30 +161,12 @@ const AddNewProduct = () => {
         <Info className=" h-4 w-4" />
         <AlertTitle>Info</AlertTitle>
         <AlertDescription className="">
-          Product addition fields are listed below. The first attribute requires
-          an image, but subsequent attributes can omit it.
+          Add product details, color attributes, and storage attributes.
         </AlertDescription>
       </Alert>
       <form onSubmit={handleSubmit(onSubmit, onError)}>
         <section className="mt-10">
           <div className=" grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-            <div className="sm:col-span-3">
-              <label
-                htmlFor="product-name"
-                className="block text-sm/6 font-medium"
-              >
-                Product Name
-              </label>
-              <div className="mt-2">
-                <Input
-                  id="product-name"
-                  {...register('name')}
-                  placeholder="Product name"
-                  type="text"
-                  autoComplete="product-name"
-                />
-              </div>
-            </div>
             <div className="sm:col-span-3">
               <label
                 htmlFor="product-title"
@@ -192,16 +177,17 @@ const AddNewProduct = () => {
               <div className="mt-2">
                 <Input
                   id="product-title"
-                  placeholder="Product title"
                   {...register('title')}
+                  placeholder="Product title"
                   type="text"
                   autoComplete="product-title"
                 />
               </div>
             </div>
+
             <div className="sm:col-span-3">
               <label
-                htmlFor="first-name"
+                htmlFor="sub-categories"
                 className="block text-sm/6 font-medium"
               >
                 Assign Sub Categories
@@ -218,55 +204,77 @@ const AddNewProduct = () => {
                   onChange={(selected) => {
                     const selectedSlugs = selected.map((option) => option.value);
                     if (selectedSlugs.length > 0) {
-                      setValue(
-                        'subCategorySlugs',
-                        selectedSlugs as [string, ...string[]],
-                      );
+                      setValue('subCategorySlugs', [selectedSlugs[0], ...selectedSlugs.slice(1)]);
                     }
                   }}
-                  placeholder="Select sub categories you like..."
-                  emptyIndicator={
-                    <Label className="text-center text-sm leading-10 dark:text-muted-foreground text-muted">
-                      no results found.
-                    </Label>
-                  }
+                  placeholder="Select sub categories..."
                 />
               </div>
             </div>
-            <div className="sm:col-span-full">
+
+            <div className="sm:col-span-3">
               <label
-                htmlFor="first-name"
+                htmlFor="short-description"
                 className="block text-sm/6 font-medium"
               >
-                Product Description
+                Short Description
               </label>
               <div className="mt-2">
                 <Textarea
-                  id="product-description"
-                  {...register('description')}
-                  autoComplete="product-description"
+                  id="short-description"
+                  {...register('short_description')}
+                  placeholder="Short description"
+                  rows={2}
+                />
+              </div>
+            </div>
+
+            <div className="sm:col-span-3">
+              <label
+                htmlFor="long-description"
+                className="block text-sm/6 font-medium"
+              >
+                Long Description
+              </label>
+              <div className="mt-2">
+                <Textarea
+                  id="long-description"
+                  {...register('long_description')}
+                  placeholder="Long description"
                   rows={4}
-                  placeholder="Write a short description about the product..."
                 />
               </div>
             </div>
           </div>
         </section>
+
+        {/* Color Attributes Section */}
         <section className="mt-5">
-          <Label className="text-base font-medium ">Product Variants</Label>
-          {fields.map((field, index) => (
+          <Label className="text-base font-medium">Color Attributes</Label>
+          {colorFields.map((field, index) => (
             <div key={field.id} className="border rounded-lg px-2 mt-2">
               <div className="pt-1 flex justify-end items-center gap-2">
                 <Button
                   size="sm"
                   variant={'ghost'}
-                  onClick={() => remove(index)}
-                  disabled={fields.length === 1}
+                  onClick={() => removeColor(index)}
+                  disabled={colorFields.length === 1}
                 >
                   <Trash2 className="h-4 w-4" />
                 </Button>
               </div>
-              <div className="mb-3 grid md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-3 px-1">
+              <div className="mb-3 grid md:grid-cols-2 gap-3 px-1">
+                <div className="col-span-1">
+                  <Label>Color</Label>
+                  <div className="mt-2">
+                    <SketchPicker
+                      color={field.color}
+                      onChangeComplete={(color) => {
+                        setValue(`color_attributes.${index}.color`, color.hex);
+                      }}
+                    />
+                  </div>
+                </div>
                 <div className="col-span-1">
                   <Label>Image</Label>
                   <div className="mt-2">
@@ -305,27 +313,45 @@ const AddNewProduct = () => {
                     </ImageUploading>
                   </div>
                 </div>
+              </div>
+            </div>
+          ))}
+          <div className="mt-3 flex justify-center items-center">
+            <Button
+              variant="secondary"
+              size="icon"
+              type="button"
+              onClick={() => appendColor({ color: '', image: '' })}
+            >
+              <Plus className="h-4 w-4" />
+            </Button>
+          </div>
+        </section>
+
+        {/* Storage Attributes Section */}
+        <section className="mt-5">
+          <Label className="text-base font-medium">Storage Attributes</Label>
+          {storageFields.map((field, index) => (
+            <div key={field.id} className="border rounded-lg px-2 mt-2">
+              <div className="pt-1 flex justify-end items-center gap-2">
+                <Button
+                  size="sm"
+                  variant={'ghost'}
+                  onClick={() => removeStorage(index)}
+                  disabled={storageFields.length === 1}
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </div>
+              <div className="mb-3 grid md:grid-cols-2 gap-3 px-1">
                 <div className="col-span-1">
-                  <Label>SKU</Label>
+                  <Label>Storage</Label>
                   <div className="mt-2">
                     <Input
-                      id="sku"
-                      {...register(`attributes.${index}.sku` as const)}
-                      placeholder="sku"
+                      id="storage"
+                      {...register(`storage_attributes.${index}.storage`)}
+                      placeholder="Storage"
                       type="text"
-                      autoComplete="sku"
-                    />
-                  </div>
-                </div>
-                <div className="col-span-1">
-                  <Label>Size</Label>
-                  <div className="mt-2">
-                    <Input
-                      id="size"
-                      placeholder="size"
-                      {...register(`attributes.${index}.size`)}
-                      type="text"
-                      autoComplete="size"
                     />
                   </div>
                 </div>
@@ -334,12 +360,11 @@ const AddNewProduct = () => {
                   <div className="mt-2">
                     <Input
                       id="price"
-                      placeholder="price"
-                      {...register(`attributes.${index}.price` as const, {
+                      {...register(`storage_attributes.${index}.price`, {
                         valueAsNumber: true,
                       })}
+                      placeholder="Price"
                       type="text"
-                      autoComplete="price"
                     />
                   </div>
                 </div>
@@ -351,12 +376,13 @@ const AddNewProduct = () => {
               variant="secondary"
               size="icon"
               type="button"
-              onClick={() => append({ size: '', sku: '', price: 0, image: '' })}
+              onClick={() => appendStorage({ storage: '', price: 0 })}
             >
               <Plus className="h-4 w-4" />
             </Button>
           </div>
         </section>
+
         <div className="mt-5 flex justify-end">
           <Button>Submit</Button>
         </div>

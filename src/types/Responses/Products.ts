@@ -1,37 +1,27 @@
-export type productAttribute = {
-  size: string;
-  sku: string;
-  price: number;
+export type colorAttribute = {
+  id: string;
+  createdAt: string;
+  updatedAt: string;
+  color: string;
   image: string;
 };
 
+export type storageAttribute = {
+  [x: string]: any;
+  id: string;
+  createdAt: string;
+  updatedAt: string;
+  price: number;
+  storage: string;
+};
+
 export type shortProduct = {
-  slug: string;
-  name: string;
-  title: string;
-  attributes: productAttribute[];
-};
-
-export type productMetaData = {
-  slug: string;
-  name: string;
-  title: string;
-  description: string;
-  attributes: productAttribute[];
-  metadata?: {
-    title: string;
-    description: string;
-  };
-};
-
-export type SingleProduct = {
-  name: string;
+  id: string;
   slug: string;
   title: string;
-  description: string;
-  subcategories: {
-    name: string;
-    slug: string;
-  }[];
-  attributes: productAttribute[];
+  long_description: string;
+  short_description: string;
+  gridImages: string[];
+  color_attributes: colorAttribute[];
+  storage_attributes: storageAttribute[];
 };

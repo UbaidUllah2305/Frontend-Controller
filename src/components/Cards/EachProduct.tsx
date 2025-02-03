@@ -6,7 +6,7 @@ import {
   CardFooter,
   CardTitle,
 } from '@/components/ui/card';
-import { EllipsisVertical, PencilOff, PencilRuler, Plus } from 'lucide-react';
+import { EllipsisVertical } from 'lucide-react';
 import { Label } from '../ui/label';
 import {
   Select,
@@ -15,15 +15,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { productAttribute, shortProduct } from '@/types/Responses/Products';
-import { useNavigate } from 'react-router-dom';
+import { shortProduct, storageAttribute } from '@/types/Responses/Products';
 import DeleteProduct from '../Modals/products/DeleteProduct';
 import {
   Menubar,
   MenubarContent,
-  MenubarItem,
   MenubarMenu,
-  MenubarSeparator,
   MenubarTrigger,
 } from '../ui/menubar';
 
@@ -31,21 +28,25 @@ const EachProduct: React.FC<{
   product: shortProduct;
   debouncedSearch: string;
 }> = (props) => {
-  const [selectedAttribute, setSelectedAttribute] = useState<productAttribute | null>(() => {
-    return props.product.attributes.length > 0
-      ? props.product.attributes[0]
+  const [selectedStorage, setSelectedStorage] = useState<storageAttribute | null>(() => {
+    return props.product.storage_attributes.length > 0
+      ? props.product.storage_attributes[0]
       : null;
   });
 
-  const router = useNavigate();
+  const [selectedColor, setSelectedColor] = useState(() => {
+    return props.product.color_attributes.length > 0
+      ? props.product.color_attributes[0]
+      : null;
+  });
 
-  // Helper function to find the first available image
+
+  // Helper function to find the image based on the selected color
   const findImage = () => {
-    if (selectedAttribute?.image) {
-      return selectedAttribute.image;
+    if (selectedColor) {
+      return selectedColor.image;
     }
-    const fallbackAttribute = props.product.attributes.find((attr) => attr.image);
-    return fallbackAttribute ? fallbackAttribute.image : 'default-image-path.jpg';
+    return 'default-image-path.jpg';
   };
 
   return (
@@ -55,74 +56,73 @@ const EachProduct: React.FC<{
           className="h-60 w-full rounded-t-lg object-contain p-1"
           src={`${import.meta.env.VITE_UPLOADS_URL}${findImage()}`}
           alt="product image"
+          // alt={`${import.meta.env.VITE_UPLOADS_URL}${findImage()}`}
         />
         <Menubar className="border-none shadow-none absolute top-0 right-0 translate-y-4 -translate-x-3">
           <MenubarMenu>
             <MenubarTrigger className="border-none">
               <EllipsisVertical className="h-4 w-4" />
             </MenubarTrigger>
-            <MenubarContent className="border border-border" align="end">
-              <MenubarItem
-                onClick={() => {
-                  router(`${props.product.slug}/edit-product`);
-                }}
-              >
-                <PencilOff className="mr-2 h-4 w-4" />
-                Edit Basic
-              </MenubarItem>
-              <MenubarItem
-                onClick={() => {
-                  router(`${props.product.slug}/add-new-attributes`);
-                }}
-              >
-                <Plus className="mr-2 h-4 w-4" />
-                Add Attributes
-              </MenubarItem>
-              <MenubarItem
-                onClick={() => {
-                  router(`${props.product.slug}/edit-attributes`);
-                }}
-              >
-                <PencilRuler className="mr-2 h-4 w-4" />
-                Edit Attributes
-              </MenubarItem>
-              <MenubarSeparator />
+            <MenubarContent className="" align="end">
+              {/* <MenubarSeparator /> */}
               <DeleteProduct
                 productSlug={props.product.slug}
                 debouncedSearch={props.debouncedSearch}
-                productTitle={props.product.name}
+                productTitle={props.product.title}
+              
               />
             </MenubarContent>
           </MenubarMenu>
         </Menubar>
         <CardTitle className="mt-4 px-3 pb-2 text-xl font-semibold tracking-tight leading-none">
-          {props.product.name}
+          {props.product.title}
         </CardTitle>
         <CardDescription className="px-3 pb-2 text-sm line-clamp-1">
-          {props.product.title}
+          {props.product.short_description}
         </CardDescription>
-        {selectedAttribute && (
+        {selectedStorage && (
           <CardContent className="px-3 pb-4 h-full">
             <Label className="text-3xl flex justify-start items-center font-bold">
-              ${selectedAttribute.price}
+              ${selectedStorage.price}
             </Label>
             <Select
               onValueChange={(value) => {
-                const attribute = props.product.attributes.find((attr) => attr.sku === value);
-                if (attribute) setSelectedAttribute(attribute);
+                const storage = props.product.storage_attributes.find((attr) => attr.storage === value);
+                if (storage) setSelectedStorage(storage);
               }}
             >
               <SelectTrigger className="mt-2 shadow-none">
-                <SelectValue placeholder={`${selectedAttribute.sku}`} />
+                <SelectValue placeholder={`${selectedStorage.storage} GB`} />
               </SelectTrigger>
               <SelectContent>
-                {props.product.attributes.map((attribute) => (
+                {props.product.storage_attributes.map((storage) => (
                   <SelectItem
-                    key={attribute.sku}
-                    value={attribute.sku}
-                    defaultChecked={attribute.sku === selectedAttribute.sku}
+                    key={storage.id}
+                    value={storage.storage}
+                    defaultChecked={storage.storage === selectedStorage.storage}
                   >
-                    {`${attribute.sku}`}
+                    {`${storage.storage} GB`}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Select
+              onValueChange={(value) => {
+                const color = props.product.color_attributes.find((attr) => attr.color === value);
+                if (color) setSelectedColor(color);
+              }}
+            >
+              <SelectTrigger className="mt-2 shadow-none">
+                <SelectValue placeholder={selectedColor ? selectedColor.color : 'Select Color'} />
+              </SelectTrigger>
+              <SelectContent>
+                {props.product.color_attributes.map((color) => (
+                  <SelectItem
+                    key={color.id}
+                    value={color.color}
+                    defaultChecked={color.color === selectedColor?.color}
+                  >
+                    {color.color}
                   </SelectItem>
                 ))}
               </SelectContent>

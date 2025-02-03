@@ -5,7 +5,7 @@ import { useCategories } from '@/hooks/useCategories';
 import { useQuery } from '@tanstack/react-query';
 import AddCategoryModal from '@/components/Modals/categories/AddCategoryModal';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Info, Terminal } from 'lucide-react';
+import { Info } from 'lucide-react';
 
 const Categories = () => {
   const { getAllCategories } = useCategories();
