@@ -43,6 +43,7 @@ const productSchema = z.object({
   storage_attributes: z
     .array(storageAttributeSchema)
     .min(1, 'At least one storage attribute is required'),
+  gridImages: z.array(z.string()).max(6, 'Maximum of 6 images allowed'), // New field
 });
 
 export type ProductFormValues = z.infer<typeof productSchema>;
@@ -64,6 +65,7 @@ const AddNewProduct = () => {
         subCategorySlugs: [],
         color_attributes: [{ color: '', image: '' }],
         storage_attributes: [{ storage: '', price: 0 }],
+        gridImages: [], // Default value for grid images
       },
     });
 
@@ -85,6 +87,8 @@ const AddNewProduct = () => {
     name: 'storage_attributes',
   });
 
+  const [gridImages, setGridImages] = useState<any[]>([]);
+
   const handleImageUpload = (file: File, index: number) => {
     const reader = new FileReader();
     reader.readAsDataURL(file);
@@ -101,13 +105,15 @@ const AddNewProduct = () => {
       title: data.title.trim(),
       long_description: data.long_description.trim(),
       short_description: data.short_description.trim(),
+      gridImages: gridImages.map((image) => image.data_url),
     };
 
     console.log(trimmedData);
     addNewProduct.mutate(trimmedData, {
       onSuccess: () => {
         toast.success('Product added successfully');
-        reset();
+        // reset();
+        // setGridImages([]); // Reset grid images
       },
       onError: (error) => {
         if (axios.isAxiosError(error) && error.response) {
@@ -224,7 +230,7 @@ const AddNewProduct = () => {
                   id="short-description"
                   {...register('short_description')}
                   placeholder="Short description"
-                  rows={2}
+                  rows={4}
                 />
               </div>
             </div>
@@ -380,6 +386,74 @@ const AddNewProduct = () => {
             >
               <Plus className="h-4 w-4" />
             </Button>
+          </div>
+        </section>
+
+        {/* Grid Images Section */}
+        <section className="mt-5">
+          <Label className="text-base font-medium">Grid Images</Label>
+          <div className="mt-2">
+            <ImageUploading
+              multiple
+              value={gridImages}
+              onChange={(imageList) => {
+                setGridImages(imageList);
+                console.log(imageList);
+              }}
+              maxNumber={6}
+              dataURLKey="data_url"
+            >
+              {({ imageList, onImageUpload, onImageRemoveAll, onImageUpdate, onImageRemove, isDragging, dragProps }) => (
+                <div className="upload__image-wrapper">
+                  <Button
+                    style={isDragging ? { color: 'red' } : undefined}
+                    onClick={onImageUpload}
+                    type="button"
+                    variant="outline"
+                    className="w-full"
+                    {...dragProps}
+                  >
+                    <Image className="h-4 w-4 mr-2" />
+                    Click or Drop here
+                  </Button>
+                  &nbsp;
+                  <Button
+                    variant="destructive"
+                    onClick={onImageRemoveAll}
+                    type="button"
+                    className='mt-2'
+                  >
+                    Remove all images
+                  </Button>
+                  <div className="grid grid-cols-3 gap-2 mt-2">
+                    {imageList.map((image, index) => (
+                      <div key={index} className="image-item">
+                        <img
+                          src={image['data_url']}
+                          alt=""
+                          width="100"
+                          className="rounded-lg object-cover h-20 w-full"
+                        />
+                        <div className="flex justify-center mt-2">
+                          <Button
+                            variant="ghost"
+                            onClick={() => onImageUpdate(index)}
+                          >
+                            Update
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            onClick={() => onImageRemove(index)}
+                          >
+                            Remove
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </ImageUploading>
           </div>
         </section>
 
