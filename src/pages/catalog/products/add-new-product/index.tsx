@@ -112,8 +112,8 @@ const AddNewProduct = () => {
     addNewProduct.mutate(trimmedData, {
       onSuccess: () => {
         toast.success('Product added successfully');
-        // reset();
-        // setGridImages([]); // Reset grid images
+        reset();
+        setGridImages([]); // Reset grid images
       },
       onError: (error) => {
         if (axios.isAxiosError(error) && error.response) {
