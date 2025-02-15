@@ -6,7 +6,3 @@ services:
       - "1003:3000"
     env_file:
       - .env
-    # volumes:
-    #   - .:/app
-    #   - /app/node_modules
-    #   - /var/www/html/medinven/medinven-client:/app
