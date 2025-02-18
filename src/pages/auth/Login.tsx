@@ -75,7 +75,7 @@ const Login = () => {
           <div className="hidden lg:flex justify-center items-center w-full p-2 max-w-md mx-auto">
             <BlurFade delay={0.7} inView>
               <img
-                src="https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image.jpg"
+                src="/images/login.png"
                 alt="adp-login-image"
                 className="h- w-fit rounded-lg"
               />
