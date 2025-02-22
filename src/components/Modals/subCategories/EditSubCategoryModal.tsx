@@ -284,7 +284,7 @@ const EditSubCategoryModal: React.FC<EditSubCategoryModalProps> = (props) => {
                   <>
                     <Label className="text-base">Previous image</Label>
                     <img
-                      src={`https://medinven.api.artemamed.com${props.image}`}
+                      src={`https://api.thefonehouse.com${props.image}`}
                       alt="uploaded"
                       width="100"
                       className="rounded-lg object-cover h-20 w-fit"
