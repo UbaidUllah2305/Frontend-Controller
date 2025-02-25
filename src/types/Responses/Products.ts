@@ -22,7 +22,10 @@ export type storageAttribute = {
   storage: string;
 };
 
+
+
 export type shortProduct = {
+  subcategories: any;
   id: string;
   slug: string;
   title: string;

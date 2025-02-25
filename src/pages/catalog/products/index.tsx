@@ -75,7 +75,7 @@ const Products: React.FC = () => {
           <Button
             variant="expandIcon"
             Icon={CirclePlus}
-            className="w-full sm:w-auto md:w-fit"
+            className="mt-10 sm:mt-0 w-full sm:w-auto md:w-fit"
             iconPlacement="left"
             size="sm"
           >

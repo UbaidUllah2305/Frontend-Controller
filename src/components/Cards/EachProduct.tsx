@@ -70,10 +70,20 @@ const EachProduct: React.FC<{
             </MenubarContent>
           </MenubarMenu>
         </Menubar>
-        <CardTitle className="mt-4 px-3 pb-2 text-xl font-semibold tracking-tight leading-none">
+
+        {/* Display Subcategory Name */}
+        {props.product.subcategories && props.product.subcategories.length > 0 && (
+          <Label className="text-xs text-gray-500 px-3 pt-2">
+            {props.product.subcategories[0].name}
+          </Label>
+        )}
+
+        {/* Product Title */}
+        <CardTitle className="mt-2 px-3 pb-2 text-xl font-semibold tracking-tight leading-none">
           {props.product.title}
         </CardTitle>
-        <CardDescription className="px-3 pb-2 text-sm line-clamp-auto">
+
+        <CardDescription className="px-3 pb-2 text-sm line-clamp-3 -pb-1">
           {props.product.short_description}
         </CardDescription>
         {selectedStorage && (
