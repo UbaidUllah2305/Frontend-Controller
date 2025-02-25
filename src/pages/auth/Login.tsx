@@ -1,3 +1,5 @@
+// src/pages/auth/Login.tsx:
+
 import LoginForm from './Login-Form';
 import { Label } from '@/components/ui/label';
 import React from 'react';
@@ -5,82 +7,87 @@ import { Link } from 'react-router-dom';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import BlurFade from '@/components/ui/blur-fade';
 import { useTheme } from 'next-themes';
+import { motion } from 'framer-motion';
+
 const Login = () => {
   const { setTheme } = useTheme();
 
   React.useEffect(() => {
-    setTheme('light'); //set your theme here after component mounts
+    setTheme('light'); // Set your theme here after component mounts
   }, []);
+
   return (
     <React.Fragment>
-      <div className="min-h-screen bg-background flex items-center justify-center p-4 light">
-        <div className="max-w-7xl w-full mx-auto grid lg:grid-cols-2 gap-8">
-          <div className="w-full max-w-md mx-auto flex flex-col justify-center">
-            <div className="flex-1 md:top-10 md:absolute">
-              <BlurFade delay={0.5} inView>
-                <div className="flex items-center space-x-2">
-                  {/* <Avatar className="rounded-md">
-                    <AvatarImage
-                      src="/src/assets/logo/ADP.svg"
-                      alt="adp-logo"
-                    />
-                    <AvatarFallback>ADP</AvatarFallback>
-                  </Avatar> */}
-                  <div className="flex flex-col">
-                    <Label className="text-base">Medinven</Label>
-                    <Label className="text-sm text-muted-foreground">
-                      The best surgical distribution platform for your business
+      {/* Root container with full viewport height and no overflow */}
+      <div className="min-h-screen bg-gradient-to-r from-blue-50 to-purple-50 flex items-center justify-center light overflow-hidden">
+        {/* Grid container for split layout */}
+        <div className="w-full h-screen grid lg:grid-cols-2 p-4">
+          {/* Left Side: Login Form */}
+          <motion.div
+            initial={{ opacity: 0, x: -50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8 }}
+            className="flex items-center justify-center p-8 overflow-y-auto" // Allow scrolling only inside this container
+          >
+            <div className="w-full max-w-md">
+              <div className="flex-1">
+                <BlurFade delay={0.5} inView>
+                  <div className="flex items-center space-x-2">
+                    <Avatar className="rounded-md">
+                      <AvatarImage src="https://images.unsplash.com/photo-1517026575980-3e1e2dedeab4?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NjV8fGNhcnxlbnwwfHwwfHx8MA%3D%3D" alt="car-logo" />
+                      <AvatarFallback>CR</AvatarFallback>
+                    </Avatar>
+                    <div className="flex flex-col">
+                      <Label className="text-2xl font-bold text-gray-900">CarRentals</Label>
+                      <Label className="text-sm text-gray-500">
+                        Your gateway to the best car rental experience
+                      </Label>
+                    </div>
+                  </div>
+                </BlurFade>
+              </div>
+              <BlurFade delay={0.6} inView>
+                <div className="mt-10">
+                  <div className="mb-6 space-y-2">
+                    <Label className="text-3xl font-bold text-gray-900">Welcome Back</Label>
+                    <Label className="block text-gray-500 text-sm">
+                      Enter your email and password to access your account.
                     </Label>
+                  </div>
+                  <LoginForm />
+                  <div className="flex items-center justify-center w-full my-5">
+                    <div className="flex-1 h-px bg-gray-200" />
+                    <span className="px-4 text-gray-500">or</span>
+                    <div className="flex-1 h-px bg-gray-200" />
+                  </div>
+                  <div className="mt-6">
+                    <p className="text-start text-sm text-gray-500">
+                      Don&apos;t have an account?{' '}
+                      <Link
+                        to="/signup"
+                        className="font-medium text-gray-600 hover:text-gray-800"
+                      >
+                        Sign up now
+                      </Link>
+                    </p>
                   </div>
                 </div>
               </BlurFade>
-            </div>{' '}
-            <BlurFade delay={0.6} inView>
-              <div className="mt-10">
-                <div className="mb-3 space-y-2">
-                  <Label className="text-2xl font-semibold mt-6 mb-2">
-                    Login
-                  </Label>
-                  <Label className="block text-muted-foreground text-sm">
-                    Enter your Email and Password to login your account.
-                  </Label>
-                </div>
-                <LoginForm />
-                <div className="flex items-center justify-center w-full my-5">
-                  <div className="flex-1 h-px bg-muted" />
-                  <span className="px-4 text-muted-foreground">or</span>
-                  <div className="flex-1 h-px bg-muted" />
-                </div>
-                <div className="mt-6">
-                  <p className="text-start text-sm text-muted-foreground">
-                    Don&apos;t have an account? Connect to our operation team to
-                    create your business account.{' '}
-                    <Link
-                      to="mailto:operationdepartment@artemamed.com"
-                      className="font-medium text-gray-900"
-                    >
-                      Contact us
-                    </Link>
-                  </p>
-                </div>
-                {/* <p className="text-center text-sm text-muted-foreground">
-                Already have an account?{' '}
-                <Link to="/" className="font-medium text-gray-900">
-                  Log in
-                </Link>
-              </p>  */}
-              </div>
-            </BlurFade>
-          </div>
-          <div className="hidden lg:flex justify-center items-center w-full p-2 max-w-md mx-auto">
-            <BlurFade delay={0.7} inView>
-              <img
-                src="/images/login.png"
-                alt="adp-login-image"
-                className="h- w-fit rounded-lg"
-              />
-            </BlurFade>
-          </div>
+            </div>
+          </motion.div>
+
+          {/* Right Side: Car Image */}
+          <motion.div
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8 }}
+            className="hidden lg:flex items-center justify-center bg-cover bg-center overflow-hidden rounded-xl" // Ensure no overflow
+            style={{
+              backgroundImage: `url('https://images.unsplash.com/photo-1567808291548-fc3ee04dbcf0?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTV8fGNhcnxlbnwwfHwwfHx8MA%3D%3D')`,
+            }}
+          >
+
+          </motion.div>
         </div>
       </div>
     </React.Fragment>
