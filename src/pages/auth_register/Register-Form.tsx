@@ -5,26 +5,46 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { User, Phone, Home, FileText } from 'lucide-react'; // Added icons
 import { Icons } from '@/components/icons';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
+import PhoneInput from 'react-phone-number-input';
 import { motion } from 'framer-motion';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 // Define the schema for the registration form
 const registerSchema = z.object({
   name: z.string().min(1, 'Name is required'),
   phone: z.string().min(1, 'Phone is required'),
-  email: z.string().email('Invalid email address'),
+  companyName: z.string().min(1, 'Company Name is required'),
+  companyEmail: z.string().email('Invalid company email address'),
+  designation: z.string().min(1, 'Designation is required'),
   vatNumber: z.string().min(1, 'VAT Number is required'),
+  companyAddress: z.string().min(1, 'Company Address is required'),
+  emirates: z.string().min(1, 'Emirates is required'),
   tradeLicense: z.instanceof(File).refine(file => file.size > 0, 'Trade License is required'),
-  address: z.string().optional(),
-  nationality: z.string().optional(),
 });
 
 type RegisterFormValues = z.infer<typeof registerSchema>;
+
+const emiratesList = [
+  'Abu Dhabi',
+  'Dubai',
+  'Sharjah',
+  'Ajman',
+  'Umm Al Quwain',
+  'Ras Al Khaimah',
+  'Fujairah',
+];
 
 const RegisterForm = () => {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
@@ -34,6 +54,7 @@ const RegisterForm = () => {
   const {
     register,
     handleSubmit,
+    control,
     formState: { errors, isSubmitting },
     setValue,
   } = useForm<RegisterFormValues>({
@@ -67,29 +88,22 @@ const RegisterForm = () => {
     const payload = {
       name: data.name,
       phone: data.phone,
-      email: data.email,
+      companyName: data.companyName,
+      companyEmail: data.companyEmail,
+      designation: data.designation,
       vatNumber: data.vatNumber,
+      companyAddress: data.companyAddress,
+      emirates: data.emirates,
       tradeLicense: tradeLicenseBase64, // Use Base64 string
-      address: data.address || '',
-      nationality: data.nationality || '',
     };
 
     console.log(payload);
 
     // Simulate API call
     try {
-      // Replace with actual API call
-      // const response = await fetch('/api/register', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify(payload),
-      // });
-      // const result = await response.json();
-      // if (result.success) {
       toast.success('Registration Successful');
       setIsLoading(false);
       navigate('/', { replace: true });
-      // }
     } catch (error) {
       console.error('Registration failed:', error);
       toast.error('Registration Failed');
@@ -103,7 +117,7 @@ const RegisterForm = () => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
       onSubmit={handleSubmit(handleRegister)}
-      className="grid gap-6"
+      className="grid gap-4"
     >
       {/* Grid layout for two fields per row */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -128,15 +142,22 @@ const RegisterForm = () => {
         {/* Phone Field */}
         <div className="grid gap-3">
           <Label htmlFor="phone" className="text-gray-700 text-sm flex items-center">
-            <Phone className="h-4 w-4 mr-2 text-gray-600" /> Phone
+            <Phone className="h-4 w-4 mr-2 text-gray-600" /> Phone Number
           </Label>
-          <Input
-            id="phone"
-            type="text"
-            placeholder="+1234567890"
-            disabled={isSubmitting || isLoading}
-            {...register('phone')}
-            className="focus:ring-2 focus:ring-purple-500 pl-6"
+          <Controller
+            name="phone"
+            control={control}
+            defaultValue=""
+            render={({ field }) => (
+              <PhoneInput
+                {...field}
+                defaultCountry="AE" // Set default country to UAE
+                international
+                withCountryCallingCode
+                placeholder="Enter phone number"
+                className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-700 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
+              />
+            )}
           />
           {errors.phone && (
             <span className="text-red-500 text-sm">{errors.phone.message}</span>
@@ -146,60 +167,60 @@ const RegisterForm = () => {
 
       {/* Grid layout for two fields per row */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Email Field */}
+        {/* Company Name Field */}
         <div className="grid gap-3">
-          <Label htmlFor="email" className="text-gray-700 text-sm flex items-center">
-            <User className="h-4 w-4 mr-2 text-gray-600" /> Email
+          <Label htmlFor="companyName" className="text-gray-700 text-sm flex items-center">
+            <User className="h-4 w-4 mr-2 text-gray-600" /> Company Name
           </Label>
           <Input
-            id="email"
-            type="email"
-            placeholder="user@gmail.com"
+            id="companyName"
+            type="text"
+            placeholder="Company Name"
             disabled={isSubmitting || isLoading}
-            {...register('email')}
+            {...register('companyName')}
             className="focus:ring-2 focus:ring-purple-500 pl-6"
           />
-          {errors.email && (
-            <span className="text-red-500 text-sm">{errors.email.message}</span>
+          {errors.companyName && (
+            <span className="text-red-500 text-sm">{errors.companyName.message}</span>
           )}
         </div>
 
-        {/* Address Field */}
+        {/* Company Email Field */}
         <div className="grid gap-3">
-          <Label htmlFor="address" className="text-gray-700 text-sm flex items-center">
-            <Home className="h-4 w-4 mr-2 text-gray-600" /> Address
+          <Label htmlFor="companyEmail" className="text-gray-700 text-sm flex items-center">
+            <User className="h-4 w-4 mr-2 text-gray-600" /> Company Email
           </Label>
           <Input
-            id="address"
-            type="text"
-            placeholder="123 Main St"
+            id="companyEmail"
+            type="email"
+            placeholder="company@example.com"
             disabled={isSubmitting || isLoading}
-            {...register('address')}
+            {...register('companyEmail')}
             className="focus:ring-2 focus:ring-purple-500 pl-6"
           />
-          {errors.address && (
-            <span className="text-red-500 text-sm">{errors.address.message}</span>
+          {errors.companyEmail && (
+            <span className="text-red-500 text-sm">{errors.companyEmail.message}</span>
           )}
         </div>
       </div>
 
       {/* Grid layout for two fields per row */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Nationality Field */}
+        {/* Designation Field */}
         <div className="grid gap-3">
-          <Label htmlFor="nationality" className="text-gray-700 text-sm flex items-center">
-            <User className="h-4 w-4 mr-2 text-gray-600" /> Nationality
+          <Label htmlFor="designation" className="text-gray-700 text-sm flex items-center">
+            <User className="h-4 w-4 mr-2 text-gray-600" /> Designation
           </Label>
           <Input
-            id="nationality"
+            id="designation"
             type="text"
-            placeholder="Nationality"
+            placeholder="Designation"
             disabled={isSubmitting || isLoading}
-            {...register('nationality')}
+            {...register('designation')}
             className="focus:ring-2 focus:ring-purple-500 pl-6"
           />
-          {errors.nationality && (
-            <span className="text-red-500 text-sm">{errors.nationality.message}</span>
+          {errors.designation && (
+            <span className="text-red-500 text-sm">{errors.designation.message}</span>
           )}
         </div>
 
@@ -220,6 +241,53 @@ const RegisterForm = () => {
             <span className="text-red-500 text-sm">{errors.vatNumber.message}</span>
           )}
         </div>
+      </div>
+
+      {/* Company Address Field */}
+      <div className="grid gap-3">
+        <Label htmlFor="companyAddress" className="text-gray-700 text-sm flex items-center">
+          <Home className="h-4 w-4 mr-2 text-gray-600" /> Company Address
+        </Label>
+        <Input
+          id="companyAddress"
+          type="text"
+          placeholder="Company Address"
+          disabled={isSubmitting || isLoading}
+          {...register('companyAddress')}
+          className="focus:ring-2 focus:ring-purple-500 pl-6"
+        />
+        {errors.companyAddress && (
+          <span className="text-red-500 text-sm">{errors.companyAddress.message}</span>
+        )}
+      </div>
+
+      {/* Emirates Field */}
+      <div className="grid gap-3">
+        <Label htmlFor="emirates" className="text-gray-700 text-sm flex items-center">
+          <Home className="h-4 w-4 mr-2 text-gray-600" /> Emirates
+        </Label>
+        <Controller
+          name="emirates"
+          control={control}
+          defaultValue=""
+          render={({ field }) => (
+            <Select onValueChange={field.onChange} value={field.value}>
+              <SelectTrigger className="focus:ring-1 focus:ring-gray-700 pl-6">
+                <SelectValue placeholder="Select Emirates" />
+              </SelectTrigger>
+              <SelectContent>
+                {emiratesList.map((emirate) => (
+                  <SelectItem key={emirate} value={emirate}>
+                    {emirate}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
+        />
+        {errors.emirates && (
+          <span className="text-red-500 text-sm">{errors.emirates.message}</span>
+        )}
       </div>
 
       {/* Trade License Field */}
