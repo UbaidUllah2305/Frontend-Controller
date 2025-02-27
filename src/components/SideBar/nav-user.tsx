@@ -1,10 +1,9 @@
 import {
-  BadgeCheck,
   Bell,
   ChevronsUpDown,
-  CreditCard,
   LogOut,
-  Sparkles,
+  Settings,
+  UserPen,
 } from 'lucide-react';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -80,13 +79,13 @@ export function NavUser({
             <DropdownMenuGroup>
               <Link to={'/profile'} className="w-full">
                 <DropdownMenuItem>
-                  <BadgeCheck className="mr-2 h-4 w-4" />
+                  <UserPen className="mr-2 h-4 w-4" />
                   Profile
                 </DropdownMenuItem>
               </Link>
               <Link to={'/settings'} className="w-full">
                 <DropdownMenuItem>
-                  <CreditCard className="mr-2 h-4 w-4" />
+                  <Settings className="mr-2 h-4 w-4" />
                   Setting
                 </DropdownMenuItem>
               </Link>

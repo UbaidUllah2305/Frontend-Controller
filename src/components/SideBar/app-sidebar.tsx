@@ -1,24 +1,13 @@
 import * as React from 'react';
 import {
-  Atom,
-  AudioWaveform,
-  BookOpen,
-  Bot,
   Box,
   ChevronRight,
-  Command,
-  Frame,
   GalleryVerticalEnd,
-  Handshake,
   Layers2,
   Layers3,
   LucideIcon,
-  Map,
   NotebookTabs,
   PanelLeftDashed,
-  PieChart,
-  Settings2,
-  SquareTerminal,
   UsersRound,
 } from 'lucide-react';
 import {
@@ -46,6 +35,7 @@ import {
 import { Link } from 'react-router-dom';
 import { useAppSelector } from '@/store';
 import { User } from '@/types/user';
+import CommandBox from './command-box';
 
 type SideBarRoutedItem = {
   title: string;
@@ -73,30 +63,7 @@ const sideBarlinks: (DropdownItem | SideBarRoutedItem)[] = [
     icon: PanelLeftDashed,
   },
   {
-    title: 'Teams',
-    type: 'dropdown',
-    url: '#',
-    slug: 'teams',
-    icon: Frame,
-    items: [
-      {
-        title: 'Operators',
-        url: '/teams/operators',
-        icon: Handshake,
-        slug: 'operators',
-        type: 'routed',
-      },
-      {
-        title: 'Marketing',
-        slug: 'marketing',
-        url: '/teams/marketing',
-        type: 'routed',
-        icon: Atom,
-      },
-    ],
-  },
-  {
-    title: 'Clients',
+    title: 'Vendors',
     type: 'routed',
     url: '/clients',
     slug: 'clients',
@@ -135,9 +102,8 @@ const sideBarlinks: (DropdownItem | SideBarRoutedItem)[] = [
 ];
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const lastIndex = location.pathname.split('/').pop() || '/';
   const firstIndex = location.pathname.split('/')[1] || '/';
-  const { firstName ,email , image} = useAppSelector((state) => state.auth.user) as User;
+  const { firstName, email, image } = useAppSelector((state) => state.auth.user) as User;
   return (
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
@@ -152,12 +118,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 <GalleryVerticalEnd className="size-4" />
               </div>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-semibold">Mediven</span>
+                <span className="truncate font-semibold">SYMS</span>
                 <span className="truncate text-xs">Controller</span>
               </div>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
+        <CommandBox />
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup className="px-2">
@@ -172,7 +139,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                     <SidebarMenuSubItem key={item.title}>
                       <SidebarMenuButton
                         tooltip={item.title}
-                        // isActive={item.slug == firstIndex}
+                      // isActive={item.slug == firstIndex}
                       >
                         <Link
                           to={item.url}
@@ -204,7 +171,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                               <SidebarMenuSubItem key={subItem.title}>
                                 <SidebarMenuSubButton
                                   asChild
-                                  // isActive={subItem.slug == lastIndex}
+                                // isActive={subItem.slug == lastIndex}
                                 >
                                   <Link to={subItem.url}>
                                     <>
