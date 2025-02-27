@@ -1,6 +1,6 @@
 // src/pages/auth/Login.tsx:
 
-import LoginForm from './Login-Form';
+import LoginForm from './Register-Form';
 import { Label } from '@/components/ui/label';
 import React from 'react';
 import { Link } from 'react-router-dom';
@@ -9,7 +9,7 @@ import BlurFade from '@/components/ui/blur-fade';
 import { useTheme } from 'next-themes';
 import { motion } from 'framer-motion';
 
-const Login = () => {
+const Regsiter = () => {
   const { setTheme } = useTheme();
 
   React.useEffect(() => {
@@ -49,9 +49,9 @@ const Login = () => {
               <BlurFade delay={0.6} inView>
                 <div className="mt-10">
                   <div className="mb-6 space-y-2">
-                    <Label className="text-3xl font-bold text-gray-900">Welcome Back</Label>
+                    <Label className="text-3xl font-bold text-gray-900">Welcome User</Label>
                     <Label className="block text-gray-500 text-sm">
-                      Enter your email and password to access your account.
+                      Enter your data to send query for Registration.
                     </Label>
                   </div>
                   <LoginForm />
@@ -62,12 +62,12 @@ const Login = () => {
                   </div>
                   <div className="mt-6">
                     <p className="text-start text-sm text-gray-500">
-                      Don&apos;t have an account?{' '}
+                      Have an account?{' '}
                       <Link
-                        to="/register"
+                        to="/auth/login"
                         className="font-medium text-gray-600 hover:text-gray-800"
                       >
-                        Register now
+                        Login now
                       </Link>
                     </p>
                   </div>
@@ -83,7 +83,7 @@ const Login = () => {
             transition={{ duration: 0.8 }}
             className="hidden lg:flex items-center justify-center bg-cover bg-center overflow-hidden rounded-xl" // Ensure no overflow
             style={{
-              backgroundImage: `url('https://images.unsplash.com/photo-1567808291548-fc3ee04dbcf0?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTV8fGNhcnxlbnwwfHwwfHx8MA%3D%3D')`,
+              backgroundImage: `url('https://plus.unsplash.com/premium_photo-1686730540277-c7e3a5571553?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mjl8fGNhcnxlbnwwfHwwfHx8MA%3D%3D')`,
             }}
           >
 
@@ -94,4 +94,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Regsiter;
