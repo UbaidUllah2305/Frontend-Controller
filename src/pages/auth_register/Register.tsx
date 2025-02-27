@@ -66,7 +66,7 @@ const Regsiter = () => {
             transition={{ duration: 0.8 }}
             className="hidden lg:flex items-center justify-center bg-cover bg-center overflow-hidden rounded-xl" // Ensure no overflow
             style={{
-              backgroundImage: `url('https://plus.unsplash.com/premium_photo-1686730540277-c7e3a5571553?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mjl8fGNhcnxlbnwwfHwwfHx8MA%3D%3D')`,
+              // backgroundImage: `url('https://plus.unsplash.com/premium_photo-1686730540277-c7e3a5571553?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mjl8fGNhcnxlbnwwfHwwfHx8MA%3D%3D')`,
             }}
           >
 

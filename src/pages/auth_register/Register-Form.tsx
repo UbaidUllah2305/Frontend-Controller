@@ -84,7 +84,7 @@ const RegisterForm = () => {
   const handleRegister = async (data: RegisterFormValues) => {
     setIsLoading(true);
 
-    // Prepare form data
+    // Map emirates to state for backend
     const payload = {
       name: data.name,
       phone: data.phone,
@@ -93,7 +93,7 @@ const RegisterForm = () => {
       designation: data.designation,
       vatNumber: data.vatNumber,
       companyAddress: data.companyAddress,
-      emirates: data.emirates,
+      state: data.emirates, // Map emirates to state
       tradeLicense: tradeLicenseBase64, // Use Base64 string
     };
 
