@@ -2,7 +2,6 @@ import { createBrowserRouter } from 'react-router-dom';
 import ErrorPage from './error-page';
 import SideBar from './components/SideBar';
 import Login from './pages/auth/Login';
-import Register from './pages/auth_register/Register';
 import PublicRoute from './PublicRoute';
 import Home from './pages/Home';
 import ProtectedRoute from './ProtectedRoute';
@@ -136,15 +135,6 @@ const router = createBrowserRouter([
       {
         path: '/auth/login',
         element: <Login />,
-      },
-    ],
-  },
-  {
-    element: <PublicRoute to={'register'} replace={true} />,
-    children: [
-      {
-        path: 'register',
-        element: <Register />,
       },
     ],
   },

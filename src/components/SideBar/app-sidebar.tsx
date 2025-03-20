@@ -118,7 +118,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 <GalleryVerticalEnd className="size-4" />
               </div>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-semibold">SYMS</span>
+                <span className="truncate font-semibold">Admin</span>
                 <span className="truncate text-xs">Controller</span>
               </div>
             </SidebarMenuButton>

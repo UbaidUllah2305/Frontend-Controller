@@ -6,7 +6,6 @@ import { Separator } from '@/components/ui/separator';
 import { Button } from '../ui/button';
 import { Inbox } from 'lucide-react';
 import { Label } from '../ui/label';
-import NotificationsSheet from '../Sheet/Notifications';
 import { useLocation } from 'react-router-dom';
 
 const SideBar = () => {
@@ -27,7 +26,6 @@ const SideBar = () => {
               </div>
               <div className="flex items-center gap-3">
                 <Separator orientation="vertical" className="ml-2 h-4" />
-                <NotificationsSheet />
                 <Button
                   variant="ghost"
                   size="icon"

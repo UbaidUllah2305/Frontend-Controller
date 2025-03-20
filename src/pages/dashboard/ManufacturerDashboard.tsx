@@ -184,7 +184,7 @@ const Dashboard = () => {
         <section className="xl:w-3/5">
           <BlurFade delay={0.25} inView>
             <Label className="text-3xl sm:text-3xl text-pretty tracking-tighter xl:text-4xl">
-              Hello See Yarti 👋
+              Hello TheFoneHouse 👋
             </Label>
           </BlurFade>
           <BlurFade delay={0.25 * 2} inView>
